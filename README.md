@@ -1,6 +1,6 @@
 # topo2md
 
-Backend api to operate topology data. (original: https://github.com/corestate55/netomox-examples)
+Convert RFC8345-topology data (json) to markdown
 
 ## Setup
 
