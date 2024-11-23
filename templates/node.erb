@@ -1,0 +1,12 @@
+## ノード: <%= node.name %>
+
+* ノード名: <%= node.name %>
+* 依存関係があるノード
+<% node.supports.each do |support| -%>
+  * レイヤ:<%= support.ref_network %>, ノード:<%= support.ref_node %>
+<% end -%>
+<%= render_recursive('Attribute', node.attribute.to_data) -%>
+
+<% node.termination_points.each do |term_point| -%>
+<%= render('templates/term_point.erb', term_point: ) -%>
+<% end -%>

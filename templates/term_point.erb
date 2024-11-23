@@ -1,0 +1,8 @@
+### インタフェース: <%= term_point.name %>
+
+* インタフェース名: <%= term_point.name %>
+* 依存関係があるインタフェース
+<% term_point.supports.each do |support| -%>
+  * レイヤ:<%= support.ref_network %>, ノード:<%= support.ref_node %>, インタフェース:<%= support.ref_tp %>
+<% end -%>
+<%= render_recursive('Attribute', term_point.attribute.to_data) %>

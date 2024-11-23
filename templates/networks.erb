@@ -1,0 +1,9 @@
+# 共通情報
+
+* トポロジファイル: `<%= options[:topo_file] %>`
+* ネットワーク名: <%= parse_file_path(options[:topo_file])[0] %>
+* スナップショット名: <%= parse_file_path(options[:topo_file])[1] %>
+
+<% topology.networks.each do |network| -%>
+<%= render('templates/network.erb', network: ) %>
+<% end -%>

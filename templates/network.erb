@@ -1,0 +1,51 @@
+# レイヤ: <%= network.name %>
+
+* ネットワーク名: <%= network.name %>
+* 種別: `<%= network.network_types %>`
+<% if network.network_type?(Netomox::NWTYPE_MDDO_L1) -%>
+  * このレイヤは Layer1, 物理ネットワークのトポロジを定義しています。
+  * このレイヤのノードは物理デバイスを示します。
+    ただし、クラスタ系機能を使って複数の物理デバイスが1代に見えるようなケースでは、OS上で認識される操作単位のデバイスとして扱われます。
+    トポロジファイルのデータはコンフィグファイル単位になっているので、物理ノードの認識もコンフィグファイル単位になります。
+  * このレイヤのリンクは物理デバイス間のリンクを示します。
+    ただし、インタフェース名は物理デバイス側(OS状)で認識されるインタフェース名です。
+    これはデバイスのコンフィグファイル中で使用するファイル名と同じです。
+    ブレイクアウトケーブルのように、1本のケーブルが複数のインタフェースに見えるようなリンクについては、OS上で認識される複数のインタフェースとして定義されます。
+<% elsif network.network_type?(Netomox::NWTYPE_MDDO_L2) -%>
+  * このレイヤは Layer2, ブリッジ・VLAN単位のトポロジを定義しています。
+  * このレイヤのノードは各デバイスで設定されているブリッジになります。VLANが定義されている場合、属性値にVLAN IDが設定されます。ノード名は "物理ノード + ブリッジ名" になります。
+  * このレイヤのリンクはブリッジ単位での接続を示します。同一のL2セグメントの接続範囲を定義しています。
+<% elsif network.network_type?(Netomox::NWTYPE_MDDO_L3) -%>
+  * このレイヤは Layer3, IPセグメント単位・L2セグメント間のトポロジを定義しています。
+  * このレイヤのノードは各デバイスで設定されているルーティングインスタンスになります。
+    デフォルではGRT(Global Routing Table)が存在するとみなして1つのLayer3ノードにします。
+    VRFによってGRT以外に複数のルーティングインスタンスがある場合、それらは別々のLayer3ノードとして扱われます。
+  * このレイヤのリンクはIPアドレス単位での接続を示します。
+<% elsif network.network_type?(Netomox::NWTYPE_MDDO_OSPF_AREA) -%>
+  * このレイヤは OSPF Area トポロジを定義しています。1つのエリアが1つのレイヤになります。
+    複数エリアで構成されている場合、OSPF Area レイヤが複数存在します。
+  * このレイヤのノードは各デバイスで設定されているOSPFプロセスになります。
+  * このレイヤのリンクはOSPFプロセス間ではられるneighbor情報になります。
+<% elsif network.network_type?(Netomox::NWTYPE_MDDO_BGP_PROC) -%>
+  * このレイヤは BGP Process トポロジを定義しています。
+  * このレイヤのノードは各デバイスで設定されているBGPプロセスになります。
+  * このレイヤのリンクはBGPプロセス間ではられるpeer情報になります。
+<% elsif network.network_type?(Netomox::NWTYPE_MDDO_BGP_AS) -%>
+  * このレイヤは BGP AS トポロジを定義しています。AS間の大域的なトポロジとその境界を設定するためのレイヤです。
+  * このレイヤのノードはBGP ASを表します。
+    BGP AS は複数のBGPプロセスで構成されます。データとしてはBGPプロセスをグルーピングしています。
+  * このレイヤのリンクはBGP AS間の境界インタフェース、AS間接続になっているBGP peerに関するメタデータになっています。
+<% end -%>
+* 依存関係があるレイヤ
+<% network.supports.each do |support| -%>
+  * レイヤ:<%= support.ref_network %>
+<% end -%>
+<%= render_recursive('Attribute', network.attribute.to_data) -%>
+
+<% network.nodes.each do |node| -%>
+<%= render('templates/node.erb', node: ) %>
+<% end -%>
+
+<% network.links.each do |link| -%>
+<%= render('templates/link.erb', link: ) %>
+<% end -%>
