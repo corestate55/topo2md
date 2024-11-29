@@ -1,12 +1,32 @@
-## ノード: <%= node.name %>
+## ノード: <%= node.name %><a id="<%= node.path %>"></a>
 
-* ノード名: <%= node.name %>
-* 依存関係があるノード
-<% node.supports.each do |support| -%>
-  * レイヤ:<%= support.ref_network %>, ノード:<%= support.ref_node %>
+このノードは、[レイヤ <%= node.parent_name %>](#<%= node.parent_name %>) に含まれる、ノード <%= node.name %> です。
+<% if node.attribute.attribute?(:node_type) -%>
+ノードの種別は `<%= node.attribute.node_type %>` です。
+<% if node.attribute.node_type == "segment" -%>
+これは point-to-multipoint に接続可能なネットワークセグメントを表しています。IPアドレスレンジ(prefix)を持ちます。
+<% elsif node.attribute.node_type == "endpoint" -%>
+これはエンドポイントノードを表しています。ネットワークセグメントを経由して他のノードと接続します。
+<% elsif node.attribute.node_type == "ospf_proc" %>
+これはOSPFプロセスを表しています。
+<% else -%>
+これはネットワークノード(ネットワークデバイスあるいはインスタンス)を表しています。ネットワークセグメントを経由して他のノードと接続します。
 <% end -%>
+<% end -%>
+
+ノード <%= node.name %> は、以下のノードと依存関係があります。
+<% node.supports.each do |support| -%>
+* [レイヤ:<%= support.ref_network %>](#<%= support.ref_network %>), [ノード:<%= support.ref_node %>](#<%= support.ref_path %>)
+<% end -%>
+
+ノード <%= node.name %> は、以下の属性情報を持っています。
 <%= render_recursive('Attribute', node.attribute.to_data) -%>
 
+ノード <%= node.name %> は、以下のインタフェースを持っています。
 <% node.termination_points.each do |term_point| -%>
-<%= render('templates/term_point.erb', term_point: ) -%>
+* [<%= term_point.name %>](#<%= term_point.path %>)
+<% end -%>
+
+<% node.termination_points.each do |term_point| -%>
+<%= render('templates/term_point.erb', node:, term_point: ) -%>
 <% end -%>

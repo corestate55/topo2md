@@ -1,9 +1,16 @@
-# 共通情報
+# 共通情報<a id="networks"></a>
 
-* トポロジファイル: `<%= options[:topo_file] %>`
-* ネットワーク名: <%= parse_file_path(options[:topo_file])[0] %>
-* スナップショット名: <%= parse_file_path(options[:topo_file])[1] %>
+<% network_name = parse_file_path(options[:topo_file])[0] -%>
+<% snapshot_name = parse_file_path(options[:topo_file])[1] -%>
+このネットワークは <%= network_name %> です。
+スナップショット名は <%= snapshot_name %> です。
+元のトポロジファイルのパスは `<%= options[:topo_file] %>` です
+
+ネットワーク <%= network_name %> は以下のレイヤを持っています。
+<% topology.networks.each do |network| -%>
+* [<%= network.name %>](#<%= network.path %>)
+<% end -%>
 
 <% topology.networks.each do |network| -%>
-<%= render('templates/network.erb', network: ) %>
+<%= render('templates/network.erb', network:, network_name:) %>
 <% end -%>

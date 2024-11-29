@@ -1,5 +1,6 @@
 .idea
 output.md
+template.csv
 
 ### Ruby template
 *.gem

@@ -1,4 +1,8 @@
-## リンク: <%= link.name %>
+## リンク: <%= link.name %><a id="<%= link.path %>"></a>
+
+このリンクは、[レイヤ <%= link.parent_name %>](#<%= link.parent_name %> に含まれる、
+ノード <%= link.source.node_ref %> のインタフェース <%= link.source.tp_ref %> から
+<%= link.destination.node_ref %> のインタフェース <%= link.destination.tp_ref %> へのリンクです。
 
 * 接続元ノード名: <%= link.source.node_ref %>
 * 接続元インタフェース名: <%= link.source.tp_ref %>

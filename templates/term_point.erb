@@ -1,8 +1,12 @@
-### インタフェース: <%= term_point.name %>
+### インタフェース: <%= term_point.name %><a id="<%= term_point.path %>"></a>
 
-* インタフェース名: <%= term_point.name %>
-* 依存関係があるインタフェース
+このインタフェースは、[レイヤ <%= node.parent_name %>](#<%= node.parent_name%>) に含まれる、
+[ノード <%= node.name %>](#<%= node.path %>) のインタフェース <%= term_point.name %> です。
+
+インタフェース <%= term_point.name %> は、以下のインタフェースと依存関係があります。
 <% term_point.supports.each do |support| -%>
-  * レイヤ:<%= support.ref_network %>, ノード:<%= support.ref_node %>, インタフェース:<%= support.ref_tp %>
+* [レイヤ:<%= support.ref_network %>](#<%= support.ref_network %>), [ノード:<%= support.ref_node %>](#<%= support.ref_parent_path %>), [インタフェース:<%= support.ref_tp %>](#<%= support.ref_path %>)
 <% end -%>
+
+インタフェース <%= term_point.name %> は、以下の属性情報を持っています。
 <%= render_recursive('Attribute', term_point.attribute.to_data) %>
